@@ -1,6 +1,6 @@
-# React + TypeScript + Vite
+# A React Dropdown + Typescript
 
-Goog Search simplifies the creation of feature-rich search input components that offer seamless functionality without limiting your ability to customize the elements that matter most to you.
+A React Dropdown simplifies the creation of feature-rich dropdown select component that offers seamless functionality without limiting your ability to customize the elements that matter most to you.
 
 ## Examples
 

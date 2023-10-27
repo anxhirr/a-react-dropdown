@@ -1,24 +1,73 @@
-import { InputHTMLAttributes } from 'react'
+import { useState } from 'react'
+import { InputHTMLAttributes, ChangeEvent } from 'react'
 import styles from './styles.module.css'
+
+type Option = {
+  label: string
+  value: string
+}
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
+  options?: Option[]
+  onOptionSelect?: (option: Option) => void
 }
 export function Input(props: InputProps) {
-  const { className = '', ...restProps } = props
+  const { className = '', onChange, options, ...restProps } = props
+
+  const [filteredOptions, setFilteredOptions] = useState<Option[]>(
+    options || []
+  )
+
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange?.(e)
+
+    if (!options) return
+    const value = e.target.value
+    const filteredOptions = options.filter((option) =>
+      option.label.toLowerCase().includes(value.toLowerCase())
+    )
+    setFilteredOptions(filteredOptions)
+  }
   return (
     <div className={styles.container}>
-      <span className={styles.searchIcon}>
-        <SearchIconSvg />
-      </span>
-      <span className={styles.clearIcon}>
-        <ClearSvg />
-      </span>
-      <input
-        className={`${className} ${styles.input}`}
-        {...restProps}
-        placeholder='Search google'
-      />
+      <div className={styles.inputContainer}>
+        <span className={styles.searchIcon}>
+          <SearchIconSvg />
+        </span>
+        <button
+          className={styles.clearIcon}
+          onClick={() =>
+            onChange?.({
+              target: {
+                value: '',
+              },
+            } as ChangeEvent<HTMLInputElement>)
+          }
+        >
+          <ClearSvg />
+        </button>
+        <input
+          className={`${className} ${styles.input}`}
+          {...restProps}
+          placeholder='Search google'
+          onChange={handleOnChange}
+        />
+      </div>
+      {filteredOptions && (
+        <div className={styles.optionsContainer}>
+          {filteredOptions.map((option) => (
+            <div
+              className={styles.option}
+              key={option.value}
+              onClick={() => props.onOptionSelect?.(option)}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

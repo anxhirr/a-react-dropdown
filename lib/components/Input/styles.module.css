@@ -8,6 +8,10 @@
   transition: all 0.2s ease-in-out;
 }
 
+.input:focus {
+  border-radius: 0.5rem;
+}
+
 .searchIcon {
   position: absolute;
   left: 10px;
@@ -27,10 +31,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  border: none;
   cursor: pointer;
 }
 
 .container {
   position: relative;
   width: min-content;
+}
+.inputContainer {
+  position: relative;
+}
+.optionsContainer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  z-index: 1;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.option {
+  padding: 0.5rem 1rem;
+  transition: all 0.1s ease-in-out;
+}
+.option:hover {
+  background: #ccc;
 }

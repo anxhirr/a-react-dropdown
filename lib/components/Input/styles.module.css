@@ -1,3 +1,25 @@
 .input {
   padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 2rem;
+  padding: 0.5rem 2.2rem;
+  font-size: 1rem;
+  outline: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  position: relative;
+  width: min-content;
 }

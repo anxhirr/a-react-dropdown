@@ -7,6 +7,8 @@ type Option = {
   value: string
 }
 
+type SelectedOption = Option | null
+
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
@@ -16,6 +18,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onBlur?: (e: FocusEvent<HTMLInputElement>) => void
   onFocus?: (e: FocusEvent<HTMLInputElement>) => void
   onClear?: () => void
+  openOptionsOnFocus?: boolean
 }
 export function Input(props: InputProps) {
   const {
@@ -27,6 +30,7 @@ export function Input(props: InputProps) {
     onBlur,
     onFocus,
     onClear,
+    openOptionsOnFocus = true,
     ...restProps
   } = props
 
@@ -34,7 +38,7 @@ export function Input(props: InputProps) {
     options || []
   )
   const [showOptions, setShowOptions] = useState(false)
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null)
+  const [selectedOption, setSelectedOption] = useState<SelectedOption>(null)
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange?.(e)
@@ -65,7 +69,7 @@ export function Input(props: InputProps) {
   }
 
   const onInputFocus = (e: FocusEvent<HTMLInputElement>) => {
-    setTimeout(() => setShowOptions(true), 100) // delay for animation TODO: will be done with css
+    openOptionsOnFocus && setTimeout(() => setShowOptions(true), 100) // delay for animation TODO: will be done with css
     onFocus?.(e)
   }
   const onInputBlur = (e: FocusEvent<HTMLInputElement>) => {
@@ -93,21 +97,50 @@ export function Input(props: InputProps) {
           {...restProps}
         />
       </div>
-      {showOptions && filteredOptions && (
+      {showOptions && (
         <div className={styles.optionsContainer}>
           {filteredOptions.map((option) => (
-            <div
-              className={`${styles.option} ${
-                selectedOption?.value === option.value ? styles.selected : ''
-              }`}
-              key={option.value}
-              onClick={() => handleOnOptionSelect(option)}
-            >
-              {option.label}
-            </div>
+            <OptionRow
+              selectedOption={selectedOption}
+              option={option}
+              onSelect={handleOnOptionSelect}
+            />
           ))}
+          {!filteredOptions.length && (
+            <div className={styles.option}>
+              <span className={styles.optionIcon}>
+                <SearchIconSvg />
+              </span>
+              <span className={styles.optionLabel}>
+                No results found for {`"${restProps.value}"`}
+              </span>
+            </div>
+          )}
         </div>
       )}
+    </div>
+  )
+}
+
+function OptionRow({
+  option,
+  selectedOption,
+  onSelect,
+}: {
+  option: Option
+  selectedOption?: SelectedOption
+  onSelect?: (option: Option) => void
+}) {
+  const isSelected = selectedOption?.value === option.value
+  return (
+    <div
+      onClick={() => onSelect?.(option)}
+      className={`${styles.option} ${isSelected ? styles.selected : ''}`}
+    >
+      <span className={styles.optionIcon}>
+        <SearchIconSvg />
+      </span>
+      <span className={styles.optionLabel}>{option.label}</span>
     </div>
   )
 }

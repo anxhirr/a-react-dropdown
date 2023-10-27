@@ -1,5 +1,3 @@
-// import { Input } from 'goog-input'
-
 import { useState } from 'react'
 import { Input } from '../lib/main'
 

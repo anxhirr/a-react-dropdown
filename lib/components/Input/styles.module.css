@@ -18,6 +18,17 @@
   align-items: center;
   justify-content: center;
 }
+.clearIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
 
 .container {
   position: relative;

@@ -1,12 +1,18 @@
-import React from 'react'
+import { InputHTMLAttributes } from 'react'
 import styles from './styles.module.css'
 
-export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  className?: string
+}
+export function Input(props: InputProps) {
   const { className = '', ...restProps } = props
   return (
     <div className={styles.container}>
       <span className={styles.searchIcon}>
         <SearchIconSvg />
+      </span>
+      <span className={styles.clearIcon}>
+        <ClearSvg />
       </span>
       <input
         className={`${className} ${styles.input}`}
@@ -28,6 +34,20 @@ function SearchIconSvg() {
       viewBox='0 0 30 30'
     >
       <path d='M 13 3 C 7.4889971 3 3 7.4889971 3 13 C 3 18.511003 7.4889971 23 13 23 C 15.396508 23 17.597385 22.148986 19.322266 20.736328 L 25.292969 26.707031 A 1.0001 1.0001 0 1 0 26.707031 25.292969 L 20.736328 19.322266 C 22.148986 17.597385 23 15.396508 23 13 C 23 7.4889971 18.511003 3 13 3 z M 13 5 C 17.430123 5 21 8.5698774 21 13 C 21 17.430123 17.430123 21 13 21 C 8.5698774 21 5 17.430123 5 13 C 5 8.5698774 8.5698774 5 13 5 z'></path>
+    </svg>
+  )
+}
+
+function ClearSvg() {
+  return (
+    <svg
+      height='20'
+      width='20'
+      viewBox='0 0 20 20'
+      aria-hidden='true'
+      focusable='false'
+    >
+      <path d='M14.348 14.849c-0.469 0.469-1.229 0.469-1.697 0l-2.651-3.030-2.651 3.029c-0.469 0.469-1.229 0.469-1.697 0-0.469-0.469-0.469-1.229 0-1.697l2.758-3.15-2.759-3.152c-0.469-0.469-0.469-1.228 0-1.697s1.228-0.469 1.697 0l2.652 3.031 2.651-3.031c0.469-0.469 1.228-0.469 1.697 0s0.469 1.229 0 1.697l-2.758 3.152 2.758 3.15c0.469 0.469 0.469 1.229 0 1.698z'></path>
     </svg>
   )
 }

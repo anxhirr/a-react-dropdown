@@ -1,6 +1,6 @@
-// import { Input } from 'goog-input'
+import { Input } from 'goog-input'
 
-import { Input } from '../lib/main'
+// import { Input } from '../lib/main'
 
 function App() {
   return (

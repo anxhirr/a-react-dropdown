@@ -10,6 +10,9 @@
 
 .input:focus {
   border-radius: 0.5rem;
+
+  /* border-bottom-left-radius: 0; */
+  border-radius: 0.5rem 0.5rem 0 0;
 }
 
 .searchIcon {
@@ -50,7 +53,7 @@
   width: 100%;
   background: #fff;
   border: 1px solid #ccc;
-  border-radius: 0.5rem;
+  border-radius: 0 0 0.5rem 0.5rem;
   z-index: 1;
   max-height: 200px;
   overflow-y: auto;
@@ -61,5 +64,9 @@
   transition: all 0.1s ease-in-out;
 }
 .option:hover {
+  background: #ccc;
+}
+
+.selected {
   background: #ccc;
 }

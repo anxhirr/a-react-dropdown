@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { InputHTMLAttributes, ChangeEvent } from 'react'
+import { InputHTMLAttributes, ChangeEvent, FocusEvent } from 'react'
 import styles from './styles.module.css'
 
 type Option = {
@@ -12,56 +12,96 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   options?: Option[]
   onOptionSelect?: (option: Option) => void
+  isClearable?: boolean
+  onBlur?: (e: FocusEvent<HTMLInputElement>) => void
+  onFocus?: (e: FocusEvent<HTMLInputElement>) => void
+  onClear?: () => void
 }
 export function Input(props: InputProps) {
-  const { className = '', onChange, options, ...restProps } = props
+  const {
+    className = '',
+    onChange,
+    options,
+    isClearable = true,
+    onOptionSelect,
+    onBlur,
+    onFocus,
+    onClear,
+    ...restProps
+  } = props
 
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(
     options || []
   )
+  const [showOptions, setShowOptions] = useState(false)
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null)
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange?.(e)
 
     if (!options) return
     const value = e.target.value
+    if (!value) setSelectedOption(null) // clear selected option if input is empty
     const filteredOptions = options.filter((option) =>
       option.label.toLowerCase().includes(value.toLowerCase())
     )
     setFilteredOptions(filteredOptions)
   }
+
+  const handleOnOptionSelect = (option: Option) => {
+    setSelectedOption(option)
+    onOptionSelect?.(option)
+  }
+
+  const handleOnClear = () => {
+    onChange?.({
+      target: {
+        value: '',
+      },
+    } as ChangeEvent<HTMLInputElement>)
+    setFilteredOptions(options || [])
+    setSelectedOption(null)
+    onClear?.()
+  }
+
+  const onInputFocus = (e: FocusEvent<HTMLInputElement>) => {
+    setTimeout(() => setShowOptions(true), 100) // delay for animation TODO: will be done with css
+    onFocus?.(e)
+  }
+  const onInputBlur = (e: FocusEvent<HTMLInputElement>) => {
+    onBlur?.(e)
+    setTimeout(() => setShowOptions(false), 100) // delay to allow click on option
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.inputContainer}>
         <span className={styles.searchIcon}>
           <SearchIconSvg />
         </span>
-        <button
-          className={styles.clearIcon}
-          onClick={() =>
-            onChange?.({
-              target: {
-                value: '',
-              },
-            } as ChangeEvent<HTMLInputElement>)
-          }
-        >
-          <ClearSvg />
-        </button>
+        {isClearable && (
+          <button className={styles.clearIcon} onClick={handleOnClear}>
+            <ClearSvg />
+          </button>
+        )}
         <input
           className={`${className} ${styles.input}`}
-          {...restProps}
           placeholder='Search google'
           onChange={handleOnChange}
+          onFocus={onInputFocus}
+          onBlur={onInputBlur}
+          {...restProps}
         />
       </div>
-      {filteredOptions && (
+      {showOptions && filteredOptions && (
         <div className={styles.optionsContainer}>
           {filteredOptions.map((option) => (
             <div
-              className={styles.option}
+              className={`${styles.option} ${
+                selectedOption?.value === option.value ? styles.selected : ''
+              }`}
               key={option.value}
-              onClick={() => props.onOptionSelect?.(option)}
+              onClick={() => handleOnOptionSelect(option)}
             >
               {option.label}
             </div>
